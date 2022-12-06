@@ -1,0 +1,94 @@
+# Instructies om SSL te activeren op je Edge device
+
+
+# Stap 1. Maak een folder aan in je home folder:
+mkdir ~/myCA2/
+
+
+#Stap 2:  Maak een private en public key aan
+# Voer antwoordem op vragen in, bijv: NL, UT, SAS, IT en voor commonname espserver
+openssl req -x509 -newkey rsa:2048 -keyout ~/myCA2/private.key -out ~/myCA2/localhost.crt -days 1000
+
+# Stap 3: Bereid de keys voor op Edge device zodat ESP Server ermee kan werken
+cp ~/myCA2/localhost.crt  ~/docker/data/server.pem
+sudo cat ~/myCA2/private.key >> ~/docker/data/server.pem
+cp ~/myCA2/localhost.crt ~/docker/data/ca.pem
+
+# Stap 4: Exporteer het certificaat tbv je browser. De Pfx kun je dus als certificaat importeren in je brwoser (settings, manage certificates)
+openssl pkcs12 -export -in ~/myCA2/localhost.crt -inkey ~/myCA2/private.key -out ~/docker/data/ca.pfx
+
+
+# Stap 5: Nu een lastig stuk: het certificaat moet je importerten in je jks tbv ESP Studio, op een container kom je hiermee in de problemen omdat je de service moet herstarten
+# na de wijziging. Ik heb nog geen manier gevonden om dit via een optie te doen in het DOCKER RUN commando.
+/usr/bin/keytool -importcert -keystore /opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts/trustedcerts.jks -file /docker/data/ca.pem -storepass changeit -noprompt -alias myespserver
+
+# Omdat ESP Studio bij mij niet verwees naar /opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts/trustedcerts.jks heb ik aanpassingen gemaakt in:
+/opt/sas/viya/home/bin/sas-espvm ->
+	# Uncomment this line if you want to run in standalone mode
+	# Default is for Studio to integrate with Viya services
+	#export ESP_STUDIO_DB="/opt/sas/${SASDEPLOYID}/config/data/${shortname}/studio"
+	export ESP_STUDIO_DB="/home/sas/espstudio"
+
+	if [[ -n $ESP_STUDIO_DB ]]
+	then
+	  # Change port (default 8080) or set other options with JAVA_OPTS
+	  # JAVA_OPTS="-Dserver.port=8181"
+	  JAVA_OPTS="-Dserver.port=31400  -Djavax.net.ssl.trustStore=/opt/sas/viya/config/etc/SASSecurityCertificateFramework/cacerts/trustedcerts.jks"
+	  prod_command="$java_bin"
+	  prod_options="$JAVA_OPTS -jar ${jarpath} ${excessargs[@]}"
+	else
+	  prod_command="$SASHOME/bin/sas-runjavasvc"
+	  prod_options="-service ${servicecontext} -verbose $java_bin -jar ${jarpath} ${excessargs[@]}"
+	fi
+
+
+# Je kan een DOCKER COMMIT proberen om je container als image op te slaan 
+# Bijvoorbeeld dit, het entrypoint heb ik van Arno
+docker ps
+docker commit --change='ENTRYPOINT ["/usr/bin/tini", "--", "/opt/sas/viya/home/bin/espstudio-entrypoint.sh"]' 1704f0b9b1a4 espstudiossl
+
+# Omdat ik een 'gewone' ESP installatie heb gedaan, heb ik geen last van het container issue! 
+
+
+# Stap 6: Vervolgens moet je nog de esp-properties.yml aanpassen, onderstaand mijn aanpassingen (mijn passphrase is dus 'praten', die van jou zal anders zijn:
+
+	security:
+	#
+	# Encryption/Authentication Configuration for clients and Server
+	#
+	# The HTTP server and client and publish/subscribe server and client use the same certifications
+	  pubsub_ssl_enabled: true    # When true, enable TLS for the pubsub server and client
+	  http_ssl_enabled: true      # When true, enable TLS for the http server and client 
+	  2_way_authentication: false # When true, enable 2 way authentication
+	  trust_selfsigned: true      # Skip the certificate verification (note: this does not work if it runs on Windows and
+								  # Tries to connect to SAS Logon server, because the certificate verification is handled by TK code.). 
+
+	#
+	# Alternately, you can import the trusted CA/keystore/bundle certificate.
+	#
+	  server: 
+		auth: null           # Set to one of the following: null|oauth_local|saslogon|kerberos|oauth2
+		server_cert_file: server.pem  # Specify the name of the certificate file. It is named server.pem by default
+							 # It should contain both certificate and private keys.
+		ca_cert_file:        # If enabled 2 way authentication, the server's CA file is used to validate the client; 
+							 # If not present, system default CA files will be used.
+		passphrase: praten   # Specify a string that can be used to protect the server certificate 
+	  client: 
+		auth: null           # Specify one of the following: null|oauth_local|oauth2.password|oauth2.client_credentials|saslogon|kerberos
+		ca_cert_file: ca.pem   # This file, when present, is named ca.pem by default. 
+							 # It should be located in the configuration directory. When it is not present, 
+							 # The system checks other installed certificates in the configuration directory.
+		client_cert_file:    # Specify the name of the client certificate file, which is required if 2 way authentication is enabled.
+		passphrase:          # Specify a string that can be used to protect the client certificate, if 2 way auth is enabled. 
+
+
+				
+# Stap 7: In de server configuratie van ESP Studio moet je aangeven dat je een SSL connectie wil
+
+
+Uiteraard moet je client en server herstarten...    
+
+
+
+
+

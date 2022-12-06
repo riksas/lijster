@@ -1,0 +1,307 @@
+<project name="Lijster9" pubsub="auto" threads="1" heartbeat-interval="1">
+  <description><![CDATA[Compute windows enable one-to-one transformation of input events to output events through the computational manipulation of input event stream fields. 
+
+You can use Compute windows to project input fields from one event to a new event and to augment this event with fields that result from a calculation. 
+
+This model uses a Compute window to match people from the city of Apex.]]></description>
+  <metadata>
+    <meta id="studioUploadedBy">anonymousUser</meta>
+    <meta id="studioUploaded">1659443952770</meta>
+    <meta id="studioModifiedBy">anonymousUser</meta>
+    <meta id="studioModified">1659445032797</meta>
+    <meta id="layout">{"contQuery":{"Aggregate":{"x":70,"y":165},"AggregateTemp":{"x":-345,"y":-135},"Copy":{"x":85,"y":30},"Electricity":{"x":110,"y":-75},"Filter":{"x":-345,"y":65},"Gas":{"x":385,"y":-55},"Join":{"x":440,"y":-165},"P1Telegram":{"x":435,"y":-380},"ParseMessage":{"x":-345,"y":-325},"ParseTelegram":{"x":155,"y":-275},"ReadP1":{"x":135,"y":-375},"ReadTemp":{"x":-345,"y":-425},"RemoveState":{"x":-345,"y":-35},"RetainSixtyMinutes":{"x":-345,"y":-230}}}</meta>
+  </metadata>
+  <contqueries>
+    <contquery name="contQuery" trace="computeWindow">
+      <windows>
+        <window-source pubsub="true" insert-only="true" autogen-key="true" index="pi_EMPTY" name="ReadP1">
+          <description><![CDATA[The Source window in this model receives input data from the P1 module with telegram input]]></description>
+          <schema>
+            <fields>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="test_input_file" active="false">
+              <description><![CDATA[read input from test csv file]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/data/input/lijster/testdata.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+            <connector class="fs" name="serial_port">
+              <description><![CDATA[serial port with temperature sensor connected]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/dev/ttyUSB0]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+            <connector class="fs" name="P1" active="false">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="fsname"><![CDATA[/dev/ttyUSB0]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-functional index="pi_EMPTY" name="ParseTelegram">
+          <schema>
+            <fields>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+              <field name="OBIS" type="string" key="true"/>
+              <field name="Value1" type="string"/>
+              <field name="Value2" type="string"/>
+              <field name="process_time" type="stamp" key="true"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="process_time"><![CDATA[eventTimestamp()]]></function>
+              <function name="OBIS"><![CDATA[substringBefore($sensor_bericht,'(')]]></function>
+              <function name="Value2"><![CDATA[substringBefore(substringAfter($sensor_bericht,'(',2),')')]]></function>
+              <function name="Value1"><![CDATA[substringBefore(substringAfter($sensor_bericht,'('),')')]]></function>
+            </functions>
+          </function-context>
+          <connectors>
+            <connector class="fs" name="output_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+        <window-source pubsub="true" insert-only="true" autogen-key="true" index="pi_EMPTY" name="ReadTemp">
+          <description><![CDATA[The Source window in this model receives input data from a sensor receiving containing readings in the format+022.3C.]]></description>
+          <schema>
+            <fields>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="test_input_file" active="false">
+              <description><![CDATA[read input from test csv file]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/data/input/lijster/testdata.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+            <connector class="fs" name="serial_port">
+              <description><![CDATA[serial port with temperature sensor connected]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/dev/ttyS0]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-functional index="pi_EMPTY" name="ParseMessage">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+              <field name="temperatuur" type="double"/>
+              <field name="phenomenon_time" type="stamp" key="true"/>
+              <field name="period" type="stamp"/>
+              <field name="start_time" type="stamp"/>
+              <field name="end_time" type="stamp"/>
+              <field name="timeCurrent" type="date"/>
+            </fields>
+          </schema>
+          <function-context>
+            <expressions>
+              <expression name="temprgx"><![CDATA[[^-]([0-9]*\.[0-9]*)C]]></expression>
+            </expressions>
+            <functions>
+              <function name="sensor_id"><![CDATA[1]]></function>
+              <function name="temperatuur"><![CDATA[number(rgx(#temprgx,$sensor_bericht,1))]]></function>
+              <function name="phenomenon_time"><![CDATA[eventTimestamp()]]></function>
+              <function name="timeCurrent"><![CDATA[timeCurrent()]]></function>
+              <function name="micros"><![CDATA[quotient(timeMilli($phenomenon_time),1000)]]></function>
+              <function name="period"><![CDATA[product(round(quotient($phenomenon_time,600000000)),600000000)]]></function>
+              <function name="start_time"><![CDATA[diff($period,300000000)]]></function>
+              <function name="end_time"><![CDATA[sum($period,300000000)]]></function>
+            </functions>
+          </function-context>
+          <connectors>
+            <connector class="fs" name="output_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+        <window-copy name="RetainSixtyMinutes">
+          <retention type="bytime_sliding" field="phenomenon_time"><![CDATA[60 minutes]]></retention>
+        </window-copy>
+        <window-aggregate name="AggregateTemp">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="period" type="stamp"/>
+              <field name="previous_period" type="stamp"/>
+              <field name="temperatuur" type="double"/>
+              <field name="start_time" type="stamp"/>
+              <field name="end_time" type="stamp"/>
+              <field name="count" type="int64"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(period, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aAve(temperatuur)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(start_time)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(end_time)]]></field-expr>
+            <field-expr><![CDATA[ESP_aCount()]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-filter index="pi_EMPTY" name="Electricity">
+          <description><![CDATA[1-0:1.7.0 Actual electricity power delivered (+P) in 1 Watt resolution]]></description>
+          <expression><![CDATA[OBIS=='1-0:1.7.0' OR OBIS=='0-0:1.0.0']]></expression>
+        </window-filter>
+        <window-filter index="pi_EMPTY" name="Gas">
+          <description><![CDATA[Last 5-minute value (temperature
+converted), gas delivered to client in
+m3, including decimal values and
+capture time]]></description>
+          <expression><![CDATA[OBIS=='0-1:24.2.1']]></expression>
+        </window-filter>
+        <window-copy name="Copy">
+          <retention type="bytime_sliding"><![CDATA[1 minutes]]></retention>
+        </window-copy>
+        <window-aggregate name="Aggregate">
+          <schema>
+            <fields>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+              <field name="OBIS" type="string"/>
+              <field name="Value1" type="string"/>
+              <field name="Value2" type="string"/>
+              <field name="process_time" type="stamp" key="true"/>
+              <field name="Value1Lag1" type="string"/>
+              <field name="Value1Lag2" type="string"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(sensor_bericht)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(OBIS)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(Value1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(Value2)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(Value1, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(Value1, 2)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveState">
+          <connectors>
+            <connector class="fs" name="output_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-remove-state>
+        <window-filter index="pi_EMPTY" name="Filter">
+          <expression><![CDATA[previous_period < period]]></expression>
+          <connectors>
+            <connector class="fs" name="output_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-filter>
+        <window-source index="pi_EMPTY" insert-only="true" autogen-key="false" name="P1Telegram">
+          <description><![CDATA[Telegram OBIS reference]]></description>
+          <schema>
+            <fields>
+              <field name="measure" type="string"/>
+              <field name="OBIS" type="string" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="OBIS">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[;]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/data/OBIS.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-join index="pi_EMPTY" name="Join">
+          <join type="leftouter">
+            <conditions>
+              <fields left="OBIS" right="OBIS"/>
+            </conditions>
+          </join>
+          <output>
+            <field-expr name="sensor_bericht" type="string"><![CDATA[l_sensor_bericht]]></field-expr>
+            <field-expr name="Value1" type="string"><![CDATA[l_Value1]]></field-expr>
+            <field-expr name="Value2" type="string"><![CDATA[l_Value2]]></field-expr>
+            <field-expr name="measure" type="string"><![CDATA[r_measure]]></field-expr>
+          </output>
+        </window-join>
+      </windows>
+      <edges>
+        <description/>
+        <edge source="ReadP1" target="ParseTelegram"/>
+        <edge source="ReadTemp" target="ParseMessage"/>
+        <edge source="ParseMessage" target="RetainSixtyMinutes"/>
+        <edge source="RetainSixtyMinutes" target="AggregateTemp"/>
+        <edge source="ParseTelegram" target="Electricity"/>
+        <edge source="ParseTelegram" target="Gas"/>
+        <edge source="Electricity" target="Copy"/>
+        <edge source="Copy" target="Aggregate"/>
+        <edge source="AggregateTemp" target="RemoveState"/>
+        <edge source="RemoveState" target="Filter"/>
+        <edge source="ParseTelegram" target="Join" role="left"/>
+        <edge source="P1Telegram" target="Join" role="right"/>
+      </edges>
+    </contquery>
+  </contqueries>
+</project>

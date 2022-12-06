@@ -1,0 +1,88 @@
+<project name="lijster" pubsub="auto" threads="1" heartbeat-interval="1">
+  <description><![CDATA[Compute windows enable one-to-one transformation of input events to output events through the computational manipulation of input event stream fields. 
+
+You can use Compute windows to project input fields from one event to a new event and to augment this event with fields that result from a calculation. 
+
+This model uses a Compute window to match people from the city of Apex.]]></description>
+  <metadata>
+    <meta id="studioUploadedBy">anonymous</meta>
+    <meta id="studioUploaded">1648636913316</meta>
+    <meta id="studioModifiedBy">anonymous</meta>
+    <meta id="studioModified">1649083391079</meta>
+    <meta id="layout">{"contQuery":{"Functional":{"x":55,"y":170},"sourceWindow":{"x":50,"y":50}}}</meta>
+  </metadata>
+  <contqueries>
+    <contquery name="contQuery" trace="computeWindow">
+      <windows>
+        <window-source pubsub="true" insert-only="true" autogen-key="true" name="sourceWindow">
+          <description><![CDATA[The Source window in this model receives input data from a CSV file containing temperature readings in the format+022.3C.]]></description>
+          <schema>
+            <fields>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="test_input_file" active="false">
+              <description><![CDATA[read input from test csv file]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[false]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/mnt/data/input/lijster/testdata.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+            <connector name="serial_port" class="fs">
+              <description><![CDATA[serial port with temperature sensor connected]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[false]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/dev/ttyS0]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-functional name="Functional">
+          <schema>
+            <fields>
+              <field name="id" type="int64" key="true"/>
+              <field name="process_time" type="stamp" key="true"/>
+              <field name="sensor_bericht" type="string"/>
+              <field name="temperatuur" type="string"/>
+            </fields>
+          </schema>
+          <function-context>
+            <expressions>
+              <expression name="temperatuur"><![CDATA[number(rgx('[^-]([0-9]*\.[0-9]*)C',$sensor_bericht,1))]]></expression>
+            </expressions>
+            <functions>
+              <function name="process_time"><![CDATA[eventTimestamp()]]></function>
+            </functions>
+          </function-context>
+          <connectors>
+            <connector class="fs" name="output_csv">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/mnt/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+      </windows>
+      <edges>
+        <description/>
+        <edge source="sourceWindow" target="Functional"/>
+      </edges>
+    </contquery>
+  </contqueries>
+</project>
