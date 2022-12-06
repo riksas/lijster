@@ -2,13 +2,11 @@
 #
 
 NAME=espserver
-#LICENSECONTENT=`base64 -w 0 /home/sas/dockercontent/esp/SASViyaV0300_9C78Q3_Linux_x86-64.txt`
-LICENSECONTENT=`base64 -w 0 /home/ubuntu/docker/license.txt`
+LICENSECONTENT=`base64 -w 0 /home/sas/docker/data/SASViyaV4_0B17MY_lts_2021.2_license_2022-01-20T103652.jwt`
 #IPADDRESS=`ifconfig enp0s3 |grep 'inet ' |awk '{print $2}'`
 
-#COMMANDSTART="docker run --name $NAME -v /home/sas/dockercontent/esp:/data --privileged --group-add dialout --device=/dev/virtual-tty:/dev/ttyS0 --add-host postgres:$IPADDRESS --add-host mqtt:$IPADDRESS -d --restart unless-stopped -p 31415:31415 -p 31416:31416  --env ODBCINI=/data/odbc.ini --env#### SETINIT_TEXT_ENC=$LICENSECONTENT --env DFESP_CONFIG=/data esp6.1:1.0"
+COMMANDSTART="docker run --name $NAME -v /home/sas/docker/data:/data -d --restart unless-stopped -p 31415:31415 -p 31416:31416 --user sas:sas --tty=true --group-add tty --group-add dialout --device=/dev/ttyUSB0:/dev/ttyUSB0 --device=/dev/ttyS0:/dev/ttyS0  --env SETINIT_TEXT_ENC=$LICENSECONTENT --env DFESP_CONFIG=/data sasesp.2021.1"
 
-COMMANDSTART="docker run --name $NAME -v /home/ubuntu/docker/data:/data -d --restart unless-stopped -p 31415:31415 -p 31416:31416  --env SETINIT_TEXT_ENC=$LICENSECONTENT --env DFESP_CONFIG=/data sasesp.6.1"
 
 NUMPODS=`docker ps | grep $NAME | wc -l`
 
@@ -34,7 +32,7 @@ status() {
 }
 
 start() {
-    echo
+    echo "$COMMANDSTART"
     echo "==== Start"
 
     if [[ $NUMPODS -eq 0 ]]

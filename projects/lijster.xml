@@ -1,21 +1,16 @@
 <project name="lijster" pubsub="auto" threads="1" heartbeat-interval="1">
-  <description><![CDATA[Compute windows enable one-to-one transformation of input events to output events through the computational manipulation of input event stream fields. 
-
-You can use Compute windows to project input fields from one event to a new event and to augment this event with fields that result from a calculation. 
-
-This model uses a Compute window to match people from the city of Apex.]]></description>
   <metadata>
-    <meta id="studioUploadedBy">anonymous</meta>
-    <meta id="studioUploaded">1648636913316</meta>
-    <meta id="studioModifiedBy">anonymous</meta>
-    <meta id="studioModified">1649083391079</meta>
-    <meta id="layout">{"contQuery":{"Functional":{"x":55,"y":170},"sourceWindow":{"x":50,"y":50}}}</meta>
+    <meta id="studioUploadedBy">anonymousUser</meta>
+    <meta id="studioUploaded">1665839243547</meta>
+    <meta id="studioModifiedBy">anonymousUser</meta>
+    <meta id="studioModified">1669034525629</meta>
+    <meta id="layout">{"contQuery":{"AggregateElectricity":{"x":-1325,"y":-830},"AggregateGas":{"x":-1065,"y":-830},"AggregateGetMaxPeriod":{"x":-1085,"y":-1135},"AggregateGetMaxPeriodTemp":{"x":-1830,"y":-830},"AggregateTemp":{"x":-2030,"y":-540},"CalculateMeasuresFromOBIS":{"x":-1580,"y":-370},"CheckDuplicatesP1":{"x":-1580,"y":-855},"CreateTransposeGroup":{"x":-1580,"y":-655},"ElGasNewKey":{"x":-820,"y":-855},"Electricity5Min":{"x":-1330,"y":-455},"Gas5Min":{"x":-1060,"y":-455},"InspectP1":{"x":-1795,"y":-1050},"JoinElGas":{"x":-1330,"y":-265},"JoinMaxPeriod":{"x":-1330,"y":-1050},"JoinTelegram":{"x":-1580,"y":-1150},"JoinTempELGas":{"x":-820,"y":-670},"JoinTempMaxPeriod":{"x":-2020,"y":-745},"KeepUpdatesAll":{"x":-825,"y":-470},"LastPeriodEL":{"x":-1320,"y":-645},"LastPeriodGas":{"x":-1065,"y":-630},"LastPeriodTemp":{"x":-2030,"y":-335},"NewKeyTemp":{"x":-2025,"y":-930},"NewKeysP1":{"x":-1330,"y":-1230},"OneRecordperTranspose":{"x":-1580,"y":-470},"OutputAll5Min":{"x":-830,"y":-380},"OutputElGas":{"x":-820,"y":-765},"OutputElec":{"x":-1330,"y":-360},"OutputGas":{"x":-1055,"y":-370},"OutputTemp":{"x":-2035,"y":-55},"P1Telegram":{"x":-1800,"y":-1325},"ParseMessage":{"x":-2020,"y":-1225},"ParseTelegram":{"x":-1580,"y":-1240},"PrevPeriodP1":{"x":-1590,"y":-265},"PrevPeriodTemp":{"x":-2020,"y":-1130},"ReadP1":{"x":-1575,"y":-1330},"ReadTemp":{"x":-2020,"y":-1325},"RemoveStateAll":{"x":-820,"y":-570},"RemoveStateELGas":{"x":-820,"y":-955},"RemoveStateElec":{"x":-1320,"y":-730},"RemoveStateElec2":{"x":-1330,"y":-550},"RemoveStateGas":{"x":-1065,"y":-730},"RemoveStateGas2":{"x":-1065,"y":-545},"RemoveStateP1":{"x":-1580,"y":-755},"RemoveStateP1Lags":{"x":-1590,"y":-165},"RemoveStateTemp":{"x":-2030,"y":-435},"RemoveStateTemp1":{"x":-2025,"y":-1030},"RemoveStateTemp2":{"x":-2030,"y":-230},"Retain10MinP1Lags":{"x":-1330,"y":-940},"Retain10MinTemp":{"x":-2020,"y":-645},"RetainSixtySecondsP1":{"x":-1580,"y":-950},"SelectedMeasuresP1":{"x":-1580,"y":-1055},"Time5Min":{"x":-2035,"y":-140},"TransposeP1":{"x":-1580,"y":-560}}}</meta>
   </metadata>
   <contqueries>
     <contquery name="contQuery" trace="computeWindow">
       <windows>
-        <window-source pubsub="true" insert-only="true" autogen-key="true" name="sourceWindow">
-          <description><![CDATA[The Source window in this model receives input data from a CSV file containing temperature readings in the format+022.3C.]]></description>
+        <window-source pubsub="true" insert-only="true" autogen-key="true" index="pi_EMPTY" name="ReadP1">
+          <description><![CDATA[The Source window in this model receives input data from the P1 module with telegram input]]></description>
           <schema>
             <fields>
               <field name="sensor_bericht" type="string"/>
@@ -28,19 +23,87 @@ This model uses a Compute window to match people from the city of Apex.]]></desc
               <properties>
                 <property name="type"><![CDATA[pub]]></property>
                 <property name="csvfielddelimiter"><![CDATA[,]]></property>
-                <property name="noautogenfield"><![CDATA[false]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
                 <property name="addcsvopcode"><![CDATA[true]]></property>
                 <property name="addcsvflags"><![CDATA[normal]]></property>
-                <property name="fsname"><![CDATA[/mnt/data/input/lijster/testdata.csv]]></property>
+                <property name="fsname"><![CDATA[/data/input/lijster/testdata.csv]]></property>
                 <property name="fstype"><![CDATA[csv]]></property>
               </properties>
             </connector>
-            <connector name="serial_port" class="fs">
+            <connector class="fs" name="serial_port">
               <description><![CDATA[serial port with temperature sensor connected]]></description>
               <properties>
                 <property name="type"><![CDATA[pub]]></property>
                 <property name="csvfielddelimiter"><![CDATA[,]]></property>
-                <property name="noautogenfield"><![CDATA[false]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/dev/ttyUSB0]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-functional index="pi_EMPTY" name="ParseTelegram">
+          <schema>
+            <fields>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+              <field name="OBIS" type="string" key="true"/>
+              <field name="phenomenon_time" type="stamp" key="true"/>
+              <field name="rounded_time" type="stamp" key="true"/>
+              <field name="sensor_id" type="int64" key="true"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="phenomenon_time"><![CDATA[eventTimestamp()]]></function>
+              <function name="OBIS"><![CDATA[substringBefore($sensor_bericht,'(')]]></function>
+              <function name="Value2"><![CDATA[substringBefore(substringAfter($sensor_bericht,'(',2),')')]]></function>
+              <function name="Value1"><![CDATA[substringBefore(substringAfter($sensor_bericht,'('),')')]]></function>
+              <function name="rounded_time"><![CDATA[product(round(quotient($phenomenon_time,1000000)),1000000)]]></function>
+              <function name="sensor_id"><![CDATA[1]]></function>
+            </functions>
+          </function-context>
+          <connectors>
+            <connector class="fs" name="output_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+        <window-source pubsub="true" insert-only="true" autogen-key="true" index="pi_EMPTY" name="ReadTemp">
+          <description><![CDATA[The Source window in this model receives input data from a sensor receiving containing readings in the format+022.3C.]]></description>
+          <schema>
+            <fields>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="test_input_file" active="false">
+              <description><![CDATA[read input from test csv file]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/data/input/lijster/testdata.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+            <connector class="fs" name="serial_port">
+              <description><![CDATA[serial port with temperature sensor connected]]></description>
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
                 <property name="addcsvopcode"><![CDATA[true]]></property>
                 <property name="addcsvflags"><![CDATA[normal]]></property>
                 <property name="fsname"><![CDATA[/dev/ttyS0]]></property>
@@ -49,39 +112,830 @@ This model uses a Compute window to match people from the city of Apex.]]></desc
             </connector>
           </connectors>
         </window-source>
-        <window-functional name="Functional">
+        <window-functional index="pi_EMPTY" name="ParseMessage">
           <schema>
             <fields>
-              <field name="id" type="int64" key="true"/>
-              <field name="process_time" type="stamp" key="true"/>
+              <field name="sensor_id" type="int32" key="true"/>
               <field name="sensor_bericht" type="string"/>
-              <field name="temperatuur" type="string"/>
+              <field name="id" type="int64" key="true"/>
+              <field name="temperatuur" type="double"/>
+              <field name="phenomenon_time" type="stamp" key="true"/>
+              <field name="t_dttm" type="date"/>
+              <field name="period" type="date"/>
+              <field name="start_time" type="date"/>
+              <field name="end_time" type="date"/>
+              <field name="timeCurrent" type="date"/>
+              <field name="timestring" type="string"/>
             </fields>
           </schema>
           <function-context>
             <expressions>
-              <expression name="temperatuur"><![CDATA[number(rgx('[^-]([0-9]*\.[0-9]*)C',$sensor_bericht,1))]]></expression>
+              <expression name="temprgx"><![CDATA[[\+]?([\-]?[0-9]*\.[0-9]*)C]]></expression>
             </expressions>
             <functions>
-              <function name="process_time"><![CDATA[eventTimestamp()]]></function>
+              <function name="sensor_id"><![CDATA[1]]></function>
+              <function name="temperatuur"><![CDATA[number(rgx(#temprgx,$sensor_bericht,1))]]></function>
+              <function name="phenomenon_time"><![CDATA[eventTimestamp()]]></function>
+              <function name="timeCurrent"><![CDATA[timeCurrent()]]></function>
+              <function name="micros"><![CDATA[quotient(timeMilli($phenomenon_time),1000)]]></function>
+              <function name="period"><![CDATA[product(round(quotient(quotient(phenomenon_time,1000000),300)),300)]]></function>
+              <function name="start_time"><![CDATA[diff($period,150)]]></function>
+              <function name="end_time"><![CDATA[sum($period,150)]]></function>
+              <function name="timestring"><![CDATA[timeString(quotient(phenomenon_time,1000000),'%Y-%m-%d %H:%M:%S')]]></function>
+              <function name="t_dttm"><![CDATA[quotient(phenomenon_time,1000000)]]></function>
             </functions>
           </function-context>
           <connectors>
-            <connector class="fs" name="output_csv">
+            <connector class="fs" name="output_temp_csv" active="false">
               <properties>
                 <property name="type"><![CDATA[sub]]></property>
                 <property name="header"><![CDATA[true]]></property>
                 <property name="snapshot"><![CDATA[false]]></property>
-                <property name="fsname"><![CDATA[/mnt/data/output/lijster/temperature.csv]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
                 <property name="fstype"><![CDATA[csv]]></property>
               </properties>
             </connector>
           </connectors>
         </window-functional>
+        <window-copy collapse-updates="false" name="Retain10MinTemp">
+          <retention type="bytime_sliding" field="global_max_period"><![CDATA[10 minutes]]></retention>
+        </window-copy>
+        <window-aggregate collapse-updates="false" name="AggregateTemp">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="previous_period" type="date"/>
+              <field name="temperatuur" type="double"/>
+              <field name="count" type="int64"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLag(period, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aAve(temperatuur)]]></field-expr>
+            <field-expr><![CDATA[ESP_aCount()]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-filter index="pi_EMPTY" name="SelectedMeasuresP1">
+          <expression><![CDATA[measure== 'Power' OR measure== 'Gas' OR measure == 'Tariff' OR measure == 'Electricity_low' OR measure =='Electricity_normal' OR measure=='P1_dttm']]></expression>
+        </window-filter>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateTemp">
+          <connectors>
+            <connector class="fs" name="output_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-remove-state>
+        <window-filter index="pi_EMPTY" name="Time5Min">
+          <expression><![CDATA[previous_period < period]]></expression>
+          <connectors>
+            <connector class="fs" name="output_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/temperature.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-filter>
+        <window-source index="pi_EMPTY" insert-only="true" name="P1Telegram">
+          <description><![CDATA[Telegram OBIS reference]]></description>
+          <schema>
+            <fields>
+              <field name="order" type="int32"/>
+              <field name="description" type="string"/>
+              <field name="OBIS" type="string" key="true"/>
+              <field name="measure" type="string"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="OBIS">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[;]]></property>
+                <property name="header"><![CDATA[1]]></property>
+                <property name="noautogenfield"><![CDATA[true]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/data/OBIS.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-join index="pi_EMPTY" output-insert-only="true" name="JoinTelegram">
+          <join type="leftouter">
+            <conditions>
+              <fields left="OBIS" right="OBIS"/>
+            </conditions>
+          </join>
+          <output>
+            <field-expr name="sensor_bericht" type="string"><![CDATA[l_sensor_bericht]]></field-expr>
+            <field-expr name="measure" type="string"><![CDATA[r_measure]]></field-expr>
+            <field-expr name="description" type="string"><![CDATA[r_description]]></field-expr>
+            <field-expr name="order" type="int32"><![CDATA[r_order]]></field-expr>
+          </output>
+        </window-join>
+        <window-copy name="RetainSixtySecondsP1">
+          <description><![CDATA[For evenTimestamp rounde by second]]></description>
+          <retention type="bytime_sliding"><![CDATA[60 seconds]]></retention>
+        </window-copy>
+        <window-aggregate name="CheckDuplicatesP1">
+          <description><![CDATA[Duplicates for eventTimestamp rounded 1 second]]></description>
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="rounded_time" type="stamp" key="true"/>
+              <field name="OBIS" type="string" key="true"/>
+              <field name="measure" type="string"/>
+              <field name="sensor_bericht" type="string"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aFirst(measure)]]></field-expr>
+            <field-expr><![CDATA[ESP_aFirst(sensor_bericht)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-transpose clear-timeout="never" mode="wide" tags-included="P1_dttm,Gas,Power,Tariff,Electricity_low,Electricity_normal" tag-name="measure" tag-values="sensor_bericht" group-by="transpose_group" name="TransposeP1"/>
+        <window-functional collapse-updates="false" index="pi_EMPTY" output-insert-only="true" name="CreateTransposeGroup">
+          <schema>
+            <fields>
+              <field name="rounded_time" type="stamp"/>
+              <field name="OBIS" type="string"/>
+              <field name="measure" type="string"/>
+              <field name="sensor_bericht" type="string"/>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="transpose_group" type="string"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="transpose_group"><![CDATA[concat('Sensor 1_', timeString(quotient($rounded_time,1000000),'%Y-%m-%d %H:%M:%S'))]]></function>
+            </functions>
+          </function-context>
+        </window-functional>
+        <window-filter index="pi_EMPTY" name="OneRecordperTranspose">
+          <expression><![CDATA[not isnull(P1_dttm_sensor_bericht)
+and not isnull(Power_sensor_bericht)
+and not isnull(Gas_sensor_bericht)
+and not isnull(Tariff_sensor_bericht)
+and not isnull(Electricity_low_sensor_bericht)
+and not isnull(Electricity_normal_sensor_bericht)]]></expression>
+        </window-filter>
+        <window-functional index="pi_EMPTY" name="CalculateMeasuresFromOBIS">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="ws_ind" type="string"/>
+              <field name="rounded_time" type="stamp" key="true"/>
+              <field name="P1_dttm_sensor_bericht" type="string"/>
+              <field name="p1_dttm" type="date" key="true"/>
+              <field name="rounded_p1_time" type="date" key="true"/>
+              <field name="rounded_p1_minutes" type="date"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="Gas_sensor_bericht" type="string"/>
+              <field name="gas_ws_ind" type="string"/>
+              <field name="gas_dttm" type="date"/>
+              <field name="rounded_gas_time" type="date"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="power" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="tariff" type="int32"/>
+            </fields>
+          </schema>
+          <function-context>
+            <expressions>
+              <expression name="p1wsrgx"><![CDATA[0-0:1\.0\.0\([0-9]*(.)\)]]></expression>
+              <expression name="gaswsrgx"><![CDATA[0-1:24\.2\.1\([0-9]*(.)\).*]]></expression>
+            </expressions>
+            <functions>
+              <function name="ws_ind"><![CDATA[rgx(#p1wsrgx,$P1_dttm_sensor_bericht,1)]]></function>
+              <function name="p1_dttm"><![CDATA[ifNext(
+equals($ws_ind,'S')
+,
+sum(
+	timeParse( 
+			  substringBefore(
+							  substringAfter($P1_dttm_sensor_bericht,'(')
+								,'S')
+			 ,'%y%m%d%H%M%S')
+	,-7200)
+,
+equals($ws_ind,'W')
+,
+sum(
+	timeParse( 
+			  substringBefore(
+							  substringAfter($P1_dttm_sensor_bericht,'(')
+							,'W')
+			 ,'%y%m%d%H%M%S')
+	,-3600)
+)]]></function>
+              <function name="rounded_p1_time"><![CDATA[product(round(quotient(p1_dttm,300)),300)]]></function>
+              <function name="rounded_p1_minutes"><![CDATA[product(round(quotient(p1_dttm,60)),60)]]></function>
+              <function name="gas_ws_ind"><![CDATA[rgx(#gaswsrgx,$Gas_sensor_bericht,1)]]></function>
+              <function name="gas_dttm"><![CDATA[ifNext(
+equals($gas_ws_ind,'S')
+,
+sum(
+	timeParse( 
+			  substringBefore(
+							  substringAfter($Gas_sensor_bericht,'(')
+								,'S')
+			 ,'%y%m%d%H%M%S')
+	,-7200)
+,
+equals($gas_ws_ind,'W')
+,
+sum(
+	timeParse( 
+			  substringBefore(
+							  substringAfter($Gas_sensor_bericht,'(')
+							,'W')
+			 ,'%y%m%d%H%M%S')
+	,-3600)
+)]]></function>
+              <function name="rounded_gas_time"><![CDATA[product(round(quotient($gas_dttm,60)),60)]]></function>
+              <function name="gas"><![CDATA[substringBefore(substringAfter($Gas_sensor_bericht,'(',2),'*')]]></function>
+              <function name="power"><![CDATA[substringBefore(substringAfter($Power_sensor_bericht,'('),'*')]]></function>
+              <function name="electricity_low"><![CDATA[substringBefore(substringAfter($Electricity_low_sensor_bericht,'('),'*')]]></function>
+              <function name="electricity_normal"><![CDATA[substringBefore(substringAfter($Electricity_normal_sensor_bericht,'('),'*')]]></function>
+              <function name="tariff"><![CDATA[substringBefore(substringAfter($Tariff_sensor_bericht,'('),')')]]></function>
+              <function name="p1_timestring"><![CDATA[timeString($rounded_p1_time,'%Y-%m-%d %H:%M:%S')]]></function>
+              <function name="gas_timestring"><![CDATA[timeString($gas_dttm,'%Y-%m-%d %H:%M:%S')]]></function>
+            </functions>
+          </function-context>
+        </window-functional>
+        <window-aggregate collapse-updates="false" name="AggregateElectricity">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="p1_dttm" type="date"/>
+              <field name="previous_period" type="date"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="power" type="double"/>
+              <field name="power_max" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="tariff" type="int32"/>
+              <field name="electricity_normal_first" type="double"/>
+              <field name="electricity_normal_last" type="double"/>
+              <field name="electricity_low_first" type="double"/>
+              <field name="electricity_low_last" type="double"/>
+              <field name="count" type="int32"/>
+              <field name="global_max_period" type="date"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(p1_dttm)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(previous_period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(p1_timestring)]]></field-expr>
+            <field-expr><![CDATA[ESP_aAve(power)]]></field-expr>
+            <field-expr><![CDATA[ESP_aMax(power)]]></field-expr>
+            <field-expr><![CDATA[ESP_aAve(electricity_low)]]></field-expr>
+            <field-expr><![CDATA[ESP_aAve(electricity_normal)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(tariff)]]></field-expr>
+            <field-expr><![CDATA[ESP_aFirst(electricity_normal)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(electricity_normal)]]></field-expr>
+            <field-expr><![CDATA[ESP_aFirst(electricity_low)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(electricity_low)]]></field-expr>
+            <field-expr><![CDATA[ESP_aCount()]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(global_max_period)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateElec"/>
+        <window-filter index="pi_EMPTY" name="Electricity5Min">
+          <expression><![CDATA[previous_period < period]]></expression>
+          <connectors>
+            <connector class="fs" name="output_p1_elec_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/elec_data.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-filter>
+        <window-aggregate name="AggregateGas">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="gas_period" type="date" key="true"/>
+              <field name="gas_previous_period" type="date"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="gas_first" type="double"/>
+              <field name="gas_last" type="double"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(gas_previous_period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(gas_timestring)]]></field-expr>
+            <field-expr><![CDATA[ESP_aAve(gas)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(gas, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(gas)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateGas"/>
+        <window-filter index="pi_EMPTY" name="Gas5Min">
+          <expression><![CDATA[previous_period < period]]></expression>
+          <connectors>
+            <connector class="fs" name="output_p1_gas_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/gas_data.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-filter>
+        <window-functional index="pi_EMPTY" output-insert-only="true" name="OutputElec">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="power" type="double"/>
+              <field name="power_max" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="tariff" type="int32"/>
+              <field name="electricity_low_usage" type="double"/>
+              <field name="electricity_normal_usage" type="double"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="electricity_low_usage"><![CDATA[sum(electricity_low_last,product(electricity_low_first,-1))]]></function>
+              <function name="electricity_normal_usage"><![CDATA[sum(electricity_normal_last,product(electricity_normal_first,-1))]]></function>
+            </functions>
+          </function-context>
+          <connectors>
+            <connector class="fs" name="output_p1_elec_csv" active="false">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/elec_data.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+        <window-remove-state remove="updates deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateP1"/>
+        <window-functional index="pi_EMPTY" output-insert-only="true" name="OutputTemp">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="temperatuur" type="double"/>
+              <field name="count" type="int64"/>
+            </fields>
+          </schema>
+        </window-functional>
+        <window-join index="pi_EMPTY" name="JoinElGas">
+          <join type="leftouter">
+            <conditions>
+              <fields left="sensor_id" right="sensor_id"/>
+              <fields left="period" right="period"/>
+            </conditions>
+          </join>
+          <output>
+            <field-selection name="p1_timestring" source="l_p1_timestring"/>
+            <field-selection name="power" source="l_power"/>
+            <field-selection name="power_max" source="l_power_max"/>
+            <field-selection name="electricity_low" source="l_electricity_low"/>
+            <field-selection name="electricity_low_usage" source="l_electricity_low_usage"/>
+            <field-selection name="electricity_normal" source="l_electricity_normal"/>
+            <field-selection name="electricity_normal_usage" source="l_electricity_normal_usage"/>
+            <field-selection name="tariff" source="l_tariff"/>
+            <field-selection name="gas_timestring" source="r_gas_timestring"/>
+            <field-selection name="gas" source="r_gas"/>
+            <field-selection name="gas_usage" source="r_gas_usage"/>
+          </output>
+        </window-join>
+        <window-functional index="pi_EMPTY" name="OutputGas">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="gas_usage" type="double"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="gas_usage"><![CDATA[sum(gas_last,product(gas_first,-1))]]></function>
+            </functions>
+          </function-context>
+        </window-functional>
+        <window-join index="pi_EMPTY" name="JoinTempELGas">
+          <join type="leftouter">
+            <conditions>
+              <fields left="sensor_id" right="sensor_id"/>
+              <fields left="period" right="period"/>
+            </conditions>
+          </join>
+          <output>
+            <field-selection name="temperatuur" source="l_temperatuur"/>
+            <field-selection name="count" source="l_count"/>
+            <field-selection name="p1_timestring" source="r_p1_timestring"/>
+            <field-selection name="power" source="r_power"/>
+            <field-selection name="power_max" source="r_power_max"/>
+            <field-selection name="electricity_low" source="r_electricity_low"/>
+            <field-selection name="electricity_low_usage" source="r_electricity_low_usage"/>
+            <field-selection name="electricity_normal" source="r_electricity_normal"/>
+            <field-selection name="electricity_normal_usage" source="r_electricity_normal_usage"/>
+            <field-selection name="tariff" source="r_tariff"/>
+            <field-selection name="gas_timestring" source="r_gas_timestring"/>
+            <field-selection name="gas" source="r_gas"/>
+            <field-selection name="gas_usage" source="r_gas_usage"/>
+          </output>
+        </window-join>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateELGas"/>
+        <window-functional index="pi_EMPTY" output-insert-only="true" name="ElGasNewKey">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="power" type="double"/>
+              <field name="power_max" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_low_usage" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="electricity_normal_usage" type="double"/>
+              <field name="tariff" type="int32"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="gas_usage" type="double"/>
+            </fields>
+          </schema>
+        </window-functional>
+        <window-filter index="pi_EMPTY" name="OutputElGas">
+          <expression><![CDATA[isnull(gas)==0]]></expression>
+        </window-filter>
+        <window-filter index="pi_EMPTY" name="KeepUpdatesAll">
+          <expression><![CDATA[isnull(gas)==0]]></expression>
+        </window-filter>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateAll"/>
+        <window-functional index="pi_EMPTY" name="OutputAll5Min">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="temperatuur" type="double"/>
+              <field name="power" type="double"/>
+              <field name="power_max" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_low_usage" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="electricity_normal_usage" type="double"/>
+              <field name="tariff" type="int32"/>
+              <field name="gas" type="double"/>
+              <field name="gas_usage" type="double"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="output_all_csv">
+              <properties>
+                <property name="type"><![CDATA[sub]]></property>
+                <property name="header"><![CDATA[true]]></property>
+                <property name="snapshot"><![CDATA[false]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/p1_t.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-functional>
+        <window-aggregate collapse-updates="false" name="PrevPeriodP1">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date"/>
+              <field name="p1_dttm" type="date"/>
+              <field name="previous_period" type="date"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="gas_period" type="date"/>
+              <field name="gas_previous_period" type="date"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="power" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="tariff" type="int32"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(rounded_p1_time)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(p1_dttm)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(rounded_p1_time, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(p1_timestring)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(rounded_gas_time)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(rounded_gas_time, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(gas_timestring)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(gas)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(power)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(electricity_low)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(electricity_normal)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(tariff)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateP1Lags"/>
+        <window-copy collapse-updates="false" name="Retain10MinP1Lags">
+          <retention type="bytime_sliding" field="global_max_period"><![CDATA[10 minutes]]></retention>
+        </window-copy>
+        <window-aggregate name="LastPeriodEL">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="p1_dttm" type="date"/>
+              <field name="period" type="date"/>
+              <field name="previous_period" type="date"/>
+              <field name="global_max_period" type="date"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="power" type="double"/>
+              <field name="power_max" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="tariff" type="int32"/>
+              <field name="electricity_normal_first" type="double"/>
+              <field name="electricity_normal_last" type="double"/>
+              <field name="electricity_low_first" type="double"/>
+              <field name="electricity_low_last" type="double"/>
+              <field name="count" type="int32"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(p1_dttm)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(period, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(global_max_period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(p1_timestring)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(power, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(power_max,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(electricity_low,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(electricity_normal,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(tariff,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(electricity_normal_first,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(electricity_normal_last,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(electricity_low_first,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(electricity_low_last,1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(count,1)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-aggregate name="LastPeriodGas">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date"/>
+              <field name="previous_period" type="date"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="gas_first" type="double"/>
+              <field name="gas_last" type="double"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(gas_period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(gas_period, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(gas_timestring)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(gas)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(gas_first, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(gas)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateElec2"/>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateGas2"/>
+        <window-functional index="pi_EMPTY" name="NewKeysP1">
+          <schema>
+            <fields>
+              <field name="aggregation_key" type="int64" key="true"/>
+              <field name="eventNumber" type="int64" key="true"/>
+              <field name="sensor_id" type="int64"/>
+              <field name="period" type="date"/>
+              <field name="previous_period" type="date"/>
+              <field name="p1_dttm" type="date"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="gas_period" type="date"/>
+              <field name="gas_previous_period" type="date"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="power" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="tariff" type="int32"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="aggregation_key"><![CDATA[1]]></function>
+            </functions>
+          </function-context>
+        </window-functional>
+        <window-aggregate name="AggregateGetMaxPeriod">
+          <schema>
+            <fields>
+              <field name="aggregation_key" type="int64" key="true"/>
+              <field name="global_max_period" type="date"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aMax(period)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-join index="pi_EMPTY" name="JoinMaxPeriod">
+          <join type="leftouter" no-regenerates="true">
+            <conditions>
+              <fields left="aggregation_key" right="aggregation_key"/>
+            </conditions>
+          </join>
+          <output>
+            <field-selection name="sensor_id" source="l_sensor_id"/>
+            <field-selection name="p1_dttm" source="l_p1_dttm"/>
+            <field-selection name="period" source="l_period"/>
+            <field-selection name="previous_period" source="l_previous_period"/>
+            <field-selection name="p1_timestring" source="l_p1_timestring"/>
+            <field-selection name="gas_period" source="l_gas_period"/>
+            <field-selection name="gas_previous_period" source="l_gas_previous_period"/>
+            <field-selection name="gas_timestring" source="l_gas_timestring"/>
+            <field-selection name="gas" source="l_gas"/>
+            <field-selection name="power" source="l_power"/>
+            <field-selection name="electricity_low" source="l_electricity_low"/>
+            <field-selection name="electricity_normal" source="l_electricity_normal"/>
+            <field-selection name="tariff" source="l_tariff"/>
+            <field-selection name="global_max_period" source="r_global_max_period"/>
+          </output>
+        </window-join>
+        <window-aggregate collapse-updates="false" name="PrevPeriodTemp">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="temperatuur" type="double"/>
+              <field name="period" type="date"/>
+              <field name="previous_period" type="date"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(temperatuur)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(period, 1)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateTemp1"/>
+        <window-functional index="pi_EMPTY" name="NewKeyTemp">
+          <schema>
+            <fields>
+              <field name="aggregation_key" type="int64" key="true"/>
+              <field name="eventNumber" type="int64" key="true"/>
+              <field name="sensor_id" type="int32"/>
+              <field name="temperatuur" type="double"/>
+              <field name="period" type="date"/>
+              <field name="previous_period" type="date"/>
+            </fields>
+          </schema>
+          <function-context>
+            <functions>
+              <function name="aggregation_key"><![CDATA[1]]></function>
+            </functions>
+          </function-context>
+        </window-functional>
+        <window-aggregate name="AggregateGetMaxPeriodTemp">
+          <schema>
+            <fields>
+              <field name="aggregation_key" type="int64" key="true"/>
+              <field name="global_max_period" type="date"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aMax(period)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-join index="pi_EMPTY" name="JoinTempMaxPeriod">
+          <join type="leftouter" no-regenerates="true">
+            <conditions>
+              <fields left="aggregation_key" right="aggregation_key"/>
+            </conditions>
+          </join>
+          <output>
+            <field-selection name="sensor_id" source="l_sensor_id"/>
+            <field-selection name="temperatuur" source="l_temperatuur"/>
+            <field-selection name="period" source="l_period"/>
+            <field-selection name="previous_period" source="l_previous_period"/>
+            <field-selection name="global_max_period" source="r_global_max_period"/>
+          </output>
+        </window-join>
+        <window-aggregate name="LastPeriodTemp">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="period" type="date"/>
+              <field name="previous_period" type="date"/>
+              <field name="temperatuur" type="double"/>
+              <field name="count" type="int64"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(period)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(period, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(temperatuur, 1)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLag(count, 1)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateTemp2"/>
+        <window-compute index="pi_EMPTY" name="InspectP1">
+          <schema>
+            <fields>
+              <field name="order" type="int32"/>
+              <field name="OBIS" type="string"/>
+              <field name="phenomenon_time" type="stamp" key="true"/>
+              <field name="sensor_bericht" type="string"/>
+              <field name="measure" type="string"/>
+              <field name="description" type="string"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[order]]></field-expr>
+            <field-expr><![CDATA[OBIS]]></field-expr>
+            <field-expr><![CDATA[sensor_bericht]]></field-expr>
+            <field-expr><![CDATA[measure]]></field-expr>
+            <field-expr><![CDATA[description]]></field-expr>
+          </output>
+        </window-compute>
       </windows>
       <edges>
         <description/>
-        <edge source="sourceWindow" target="Functional"/>
+        <edge source="ReadP1" target="ParseTelegram"/>
+        <edge source="ReadTemp" target="ParseMessage"/>
+        <edge source="Retain10MinTemp" target="AggregateTemp"/>
+        <edge source="AggregateTemp" target="RemoveStateTemp"/>
+        <edge source="ParseTelegram" target="JoinTelegram" role="left"/>
+        <edge source="P1Telegram" target="JoinTelegram" role="right"/>
+        <edge source="JoinTelegram" target="SelectedMeasuresP1"/>
+        <edge source="RetainSixtySecondsP1" target="CheckDuplicatesP1"/>
+        <edge source="CreateTransposeGroup" target="TransposeP1"/>
+        <edge source="TransposeP1" target="OneRecordperTranspose"/>
+        <edge source="OneRecordperTranspose" target="CalculateMeasuresFromOBIS"/>
+        <edge source="AggregateElectricity" target="RemoveStateElec"/>
+        <edge source="AggregateGas" target="RemoveStateGas"/>
+        <edge source="Electricity5Min" target="OutputElec"/>
+        <edge source="SelectedMeasuresP1" target="RetainSixtySecondsP1"/>
+        <edge source="CheckDuplicatesP1" target="RemoveStateP1"/>
+        <edge source="RemoveStateP1" target="CreateTransposeGroup"/>
+        <edge source="Time5Min" target="OutputTemp"/>
+        <edge source="Gas5Min" target="OutputGas"/>
+        <edge source="OutputElec" target="JoinElGas" role="left"/>
+        <edge source="OutputGas" target="JoinElGas" role="right"/>
+        <edge source="OutputTemp" target="JoinTempELGas" role="left"/>
+        <edge source="JoinElGas" target="RemoveStateELGas"/>
+        <edge source="RemoveStateELGas" target="ElGasNewKey"/>
+        <edge source="ElGasNewKey" target="OutputElGas"/>
+        <edge source="OutputElGas" target="JoinTempELGas" role="right"/>
+        <edge source="JoinTempELGas" target="RemoveStateAll"/>
+        <edge source="RemoveStateAll" target="KeepUpdatesAll"/>
+        <edge source="KeepUpdatesAll" target="OutputAll5Min"/>
+        <edge source="CalculateMeasuresFromOBIS" target="PrevPeriodP1"/>
+        <edge source="PrevPeriodP1" target="RemoveStateP1Lags"/>
+        <edge source="Retain10MinP1Lags" target="AggregateElectricity"/>
+        <edge source="Retain10MinP1Lags" target="AggregateGas"/>
+        <edge source="LastPeriodEL" target="RemoveStateElec2"/>
+        <edge source="LastPeriodGas" target="RemoveStateGas2"/>
+        <edge source="RemoveStateElec2" target="Electricity5Min"/>
+        <edge source="RemoveStateGas2" target="Gas5Min"/>
+        <edge source="RemoveStateP1Lags" target="NewKeysP1"/>
+        <edge source="NewKeysP1" target="AggregateGetMaxPeriod"/>
+        <edge source="NewKeysP1" target="JoinMaxPeriod" role="left"/>
+        <edge source="AggregateGetMaxPeriod" target="JoinMaxPeriod" role="right"/>
+        <edge source="JoinMaxPeriod" target="Retain10MinP1Lags"/>
+        <edge source="RemoveStateElec" target="LastPeriodEL"/>
+        <edge source="RemoveStateGas" target="LastPeriodGas"/>
+        <edge source="ParseMessage" target="PrevPeriodTemp"/>
+        <edge source="PrevPeriodTemp" target="RemoveStateTemp1"/>
+        <edge source="RemoveStateTemp1" target="NewKeyTemp"/>
+        <edge source="NewKeyTemp" target="AggregateGetMaxPeriodTemp"/>
+        <edge source="NewKeyTemp" target="JoinTempMaxPeriod" role="left"/>
+        <edge source="AggregateGetMaxPeriodTemp" target="JoinTempMaxPeriod" role="right"/>
+        <edge source="JoinTempMaxPeriod" target="Retain10MinTemp"/>
+        <edge source="RemoveStateTemp" target="LastPeriodTemp"/>
+        <edge source="LastPeriodTemp" target="RemoveStateTemp2"/>
+        <edge source="RemoveStateTemp2" target="Time5Min"/>
+        <edge source="JoinTelegram" target="InspectP1"/>
       </edges>
     </contquery>
   </contqueries>

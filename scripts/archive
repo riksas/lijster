@@ -1,0 +1,8 @@
+
+#!/bin/bash
+#
+cd /home/sas/docker/data/output/lijster/
+cp p1_t.csv p1_t_$(date +%Y%m%d%H%M%S).csv
+echo "sensor_id,period,temperatuur,power,power_max,electricity_low,electricity_low_usage,electricity_normal,electricity_normal_usage,tariff,gas,gas_usage" > p1_t.csv
+
+

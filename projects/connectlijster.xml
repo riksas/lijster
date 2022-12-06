@@ -1,0 +1,207 @@
+<project name="connectlijster" threads="1" pubsub="auto" heartbeat-interval="1">
+  <description><![CDATA[This Project Connects to the lijster project to get real time data and also reads stored data in csv from the lijster project]]></description>
+  <metadata>
+    <meta id="studioUploadedBy">anonymousUser</meta>
+    <meta id="studioUploaded">1663023145668</meta>
+    <meta id="studioModifiedBy">anonymousUser</meta>
+    <meta id="studioModified">1669297121397</meta>
+    <meta id="layout">{"contQuery":{"ElecHist":{"x":90,"y":-570},"InspectP1":{"x":320,"y":-705},"LastTelegram":{"x":480,"y":-445},"OBISnotNull":{"x":435,"y":-600},"P1Current":{"x":-205,"y":-440},"P1LastInterval":{"x":35,"y":-435},"P1Live":{"x":-195,"y":-690},"StoredElecData":{"x":95,"y":-695},"TCurrent":{"x":-545,"y":-460},"TempLive":{"x":-470,"y":-680},"lastMinute":{"x":265,"y":-445}}}</meta>
+  </metadata>
+  <contqueries>
+    <contquery name="contQuery" index="pi_EMPTY" include-singletons="true">
+      <windows>
+        <window-source index="pi_EMPTY" output-insert-only="true" name="P1Live">
+          <description><![CDATA[Reads live data from project lijster]]></description>
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="ws_ind" type="string"/>
+              <field name="rounded_time" type="stamp" key="true"/>
+              <field name="P1_dttm_sensor_bericht" type="string"/>
+              <field name="p1_dttm" type="date" key="true"/>
+              <field name="rounded_p1_time" type="date" key="true"/>
+              <field name="rounded_p1_minutes" type="date"/>
+              <field name="p1_timestring" type="string"/>
+              <field name="Gas_sensor_bericht" type="string"/>
+              <field name="gas_ws_ind" type="string"/>
+              <field name="gas_dttm" type="date"/>
+              <field name="rounded_gas_time" type="date"/>
+              <field name="gas_timestring" type="string"/>
+              <field name="gas" type="double"/>
+              <field name="power" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="tariff" type="int32"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="project" name="ReadP1">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="srcproject"><![CDATA[lijster]]></property>
+                <property name="srccontinuousquery"><![CDATA[contQuery]]></property>
+                <property name="srcwindow"><![CDATA[CalculateMeasuresFromOBIS]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-source index="pi_HASH" insert-only="true" output-insert-only="true" name="StoredElecData">
+          <schema>
+            <fields>
+              <field name="opcd" type="string"/>
+              <field name="flag" type="string"/>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="period" type="date" key="true"/>
+              <field name="temperatuur" type="double"/>
+              <field name="power" type="double"/>
+              <field name="power_max" type="double"/>
+              <field name="electricity_low" type="double"/>
+              <field name="electricity_low_usage" type="double"/>
+              <field name="electricity_normal" type="double"/>
+              <field name="electricity_normal_usage" type="double"/>
+              <field name="tariff" type="int32"/>
+              <field name="gas" type="double"/>
+              <field name="gas_usage" type="double"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="fs" name="ElecData">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="csvfielddelimiter"><![CDATA[,]]></property>
+                <property name="growinginputfile"><![CDATA[true]]></property>
+                <property name="header"><![CDATA[1]]></property>
+                <property name="noautogenfield"><![CDATA[false]]></property>
+                <property name="addcsvopcode"><![CDATA[true]]></property>
+                <property name="addcsvflags"><![CDATA[normal]]></property>
+                <property name="fsname"><![CDATA[/data/output/lijster/p1_t.csv]]></property>
+                <property name="fstype"><![CDATA[csv]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-source output-insert-only="true" name="TempLive">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="sensor_bericht" type="string"/>
+              <field name="id" type="int64" key="true"/>
+              <field name="temperatuur" type="double"/>
+              <field name="phenomenon_time" type="stamp" key="true"/>
+              <field name="t_dttm" type="date"/>
+              <field name="period" type="date"/>
+              <field name="start_time" type="date"/>
+              <field name="end_time" type="date"/>
+              <field name="timeCurrent" type="date"/>
+              <field name="timestring" type="string"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="project" name="ReadTemp">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="srcproject"><![CDATA[lijster]]></property>
+                <property name="srccontinuousquery"><![CDATA[contQuery]]></property>
+                <property name="srcwindow"><![CDATA[ParseMessage]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-filter pulse-interval="1 seconds" output-insert-only="true" collapse-updates="false" name="ElecHist">
+          <expression><![CDATA[1==1]]></expression>
+        </window-filter>
+        <window-aggregate index="pi_HASH" name="P1Current">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="power" type="double"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(power)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-copy index="pi_HASH" name="P1LastInterval">
+          <retention type="bycount_sliding"><![CDATA[100]]></retention>
+        </window-copy>
+        <window-aggregate index="pi_HASH" pulse-interval="2 seconds" name="lastMinute">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int64" key="true"/>
+              <field name="p1_dttm" type="date"/>
+              <field name="power" type="double"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(p1_dttm)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(power)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-source output-insert-only="true" name="InspectP1">
+          <schema>
+            <fields>
+              <field name="order" type="int32"/>
+              <field name="OBIS" type="string"/>
+              <field name="phenomenon_time" type="stamp" key="true"/>
+              <field name="sensor_bericht" type="string"/>
+              <field name="measure" type="string"/>
+              <field name="description" type="string"/>
+            </fields>
+          </schema>
+          <connectors>
+            <connector class="project" name="ReadP1">
+              <properties>
+                <property name="type"><![CDATA[pub]]></property>
+                <property name="srcproject"><![CDATA[lijster]]></property>
+                <property name="srccontinuousquery"><![CDATA[contQuery]]></property>
+                <property name="srcwindow"><![CDATA[InspectP1]]></property>
+              </properties>
+            </connector>
+          </connectors>
+        </window-source>
+        <window-aggregate index="pi_HASH" name="LastTelegram">
+          <schema>
+            <fields>
+              <field name="OBIS" type="string" key="true"/>
+              <field name="phenomenon_time" type="stamp"/>
+              <field name="order" type="int32"/>
+              <field name="sensor_bericht" type="string"/>
+              <field name="measure" type="string"/>
+              <field name="description" type="string"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(phenomenon_time)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(order)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(sensor_bericht)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(measure)]]></field-expr>
+            <field-expr><![CDATA[ESP_aLast(description)]]></field-expr>
+          </output>
+        </window-aggregate>
+        <window-filter name="OBISnotNull">
+          <expression><![CDATA[isnull(OBIS)==0]]></expression>
+        </window-filter>
+        <window-aggregate index="pi_HASH" name="TCurrent">
+          <schema>
+            <fields>
+              <field name="sensor_id" type="int32" key="true"/>
+              <field name="temperatuur" type="double"/>
+            </fields>
+          </schema>
+          <output>
+            <field-expr><![CDATA[ESP_aLast(temperatuur)]]></field-expr>
+          </output>
+        </window-aggregate>
+      </windows>
+      <edges>
+        <edge source="StoredElecData" target="ElecHist"/>
+        <edge source="P1Live" target="P1Current"/>
+        <edge source="P1Live" target="P1LastInterval"/>
+        <edge source="P1Live" target="lastMinute"/>
+        <edge source="InspectP1" target="OBISnotNull"/>
+        <edge source="OBISnotNull" target="LastTelegram"/>
+        <edge source="TempLive" target="TCurrent"/>
+      </edges>
+    </contquery>
+  </contqueries>
+</project>

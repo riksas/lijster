@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+# at startup  
+sudo systemctl stop serial-getty@ttyS0  
+sudo systemctl disable serial-getty@ttyS0  
+sudo systemctl mask serial-getty@ttyS0.service
+sudo chmod a+rw /dev/ttyS0  
+sudo stty -F /dev/ttyS0 9600 cs8 -cstopb -parenb 
+stty -F /dev/ttyUSB0 raw 115200 evenp
+cd /home/sas/docker/data/output/lijster/
+cp p1_t.csv p1_t_$(date +%Y%m%d%H%M%S).csv
+echo "sensor_id,period,temperatuur,power,power_max,electricity_low,electricity_low_usage,electricity_normal,electricity_normal_usage,tar iff,gas,gas_usage" > p1_t.csv
+cd /home/sas/docker
+touch ./testje.txt
+./esp.sh restart
+
