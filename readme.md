@@ -20,7 +20,6 @@ https://esapps.sas.com/confluence/display/K8s/Add+SAS+CA+certs+to+docker+host
     - [install.sh](#installsh)
     - [als het fout gaat kun je opschonen met ( c2038f1eefae = image id):](#als-het-fout-gaat-kun-je-opschonen-met--c2038f1eefae--image-id)
   - [Extra:](#extra)
-    - [the command ‘usermod‘ is used to modify or change any attributes of a already created user account via command line.](#the-command-usermod-is-used-to-modify-or-change-any-attributes-of-a-already-created-user-account-via-command-line)
   - [troubleshooting:](#troubleshooting)
   - [ESP Server CLI dfesp\_xml\_client](#esp-server-cli-dfesp_xml_client)
   - [Run ESP on k8s image](#run-esp-on-k8s-image)
@@ -32,6 +31,7 @@ https://esapps.sas.com/confluence/display/K8s/Add+SAS+CA+certs+to+docker+host
 - [Status	Servicenaam	Oorspronkelijke IP	WAN-interface	Server IP-adres	Startpoort	Eindpoort	Vertaling startpoort	Vertaling eindpoort	Protocol	Wijzigen](#statusservicenaamoorspronkelijke-ipwan-interfaceserver-ip-adresstartpoorteindpoortvertaling-startpoortvertaling-eindpoortprotocolwijzigen)
   - [OpenSSH](#openssh)
     - [auto recover from power failure](#auto-recover-from-power-failure)
+    - [Weekly restart to prevent memory issues](#weekly-restart-to-prevent-memory-issues)
   - [at startup](#at-startup)
   - [TODO](#todo)
     - [ssl esp server](#ssl-esp-server)
@@ -173,11 +173,10 @@ dfesp_xml_server -http 31415 -pubsub 31416 -loglevel "esp=error,common.http=debu
 nohup dfesp_xml_server -http 31415 -pubsub 31416 >/tmp/esp-server.log &
 tail -f /tmp/esp-server.log
 ```
-- stop server  
+- stop server   
+```
 dfesp_xml_client -url "http://baspi:31415/eventStreamProcessing/v1/server/state?value=stopped" -put
-
-cd /mnt/data/input/compute/
-
+```
 
 ## Install on docker
 
@@ -186,7 +185,7 @@ https://web.microsoftstream.com/video/fc10393e-1753-4e09-8770-be98ca8c219e op 1:
 https://docs.docker.com/get-started/overview/
 ```
  apt install net-tools  
- ```
+```
  
 1. Create local registry  
 ```
@@ -217,11 +216,13 @@ cd ~/docker/
 sudo docker pull ubuntu
 sudo docker pull ubuntu:20.04
 ```
-5. Hiernaar wordt verwezen in de eerste regels van de Dockerfile: FROM ubuntu:20.04
+5. Hiernaar wordt verwezen in de eerste regels van de Dockerfile: FROM ubuntu:20.04  
    Voor root password voor ubuntu click hier
    https://linuxconfig.org/default-root-password-on-ubuntu-18-04-bionic-beaver-linux
 
 6. docker build  
+
+
 ### install.sh  
 ```
 #!/bin/bash
@@ -349,7 +350,7 @@ https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permissio
 ```
 sudo groupadd docker
 ```
-### the command ‘usermod‘ is used to modify or change any attributes of a already created user account via command line.
+The command ‘usermod‘ is used to modify or change any attributes of a already created user account via command line.
    -a = To add anyone of the group to a secondary group.  
    -G = To add a supplementary groups.  
  $USER is current user  
@@ -368,13 +369,7 @@ step 1:(it lists docker container with its name)
 docker ps -a
 step 2:
 docker rm name_of_the_docker_container
-
-
 stop is ctrl-c
-
-
----
-
 
 ## ESP Server CLI dfesp_xml_client
 
@@ -404,12 +399,14 @@ dfesp_xml_client -url "http://baspi:31415/eventStreamProcessing/v1/projectResult
 dfesp_xml_client -url "http://baspi:31415/eventStreamProcessing/v1/projects/lijster/stat=/opt/sas/viya/home/SASEventStreamProcessingEngine/  
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DFESP_HOME/ssl/lib:$DFESP_HOME/lib:/opt/sas/viya/home/SASFoundation/sasexe:/usr/lib  
 export PATH=$PATH:$DFESP_HOME/bin  
+```
+
+```
 dfesp_xml_client -url "http://ubuntu.localdomain:31415/eventStreamProcessing/v1/server/state?value=stopped" -put  
 curl "http://ubuntu.localdomain/eventStreamProcessing/v1/projects"  
 ```
 
 zoek met iphone, app: fing, de baspi op het netwerk  
-
 
 curl "http://baspi:31415/eventStreamProcessing/v1/projects"  
 
@@ -609,7 +606,7 @@ And presented as:
 if the format of H3 is set to such time format.
 
 
-## add slimme meter http://www.gejanssen.com/howto/Slimme-meter-uitlezen/  
+## Add slimme meter http://www.gejanssen.com/howto/Slimme-meter-uitlezen/  
 slimme meter
 ```
 sudo apt update
@@ -747,7 +744,7 @@ _esp.connect(server,{ready:ready,error:error},{model:null,overwrite:true,force:_
 
 - use ftp server https://ubuntu.com/server/docs/service-ftp  
 Security, no write access and ssl
-### Uncomment this to enable any form of FTP write command.
+ Uncomment this to enable any form of FTP write command.
 
 
 https://www.cyberciti.biz/faq/howto-change-ssh-port-on-linux-or-unix-server/
@@ -907,15 +904,28 @@ Issues: data storage with ESP Edge
 
 https://blogs.sas.com/content/sasdummy/2015/04/16/how-to-convert-a-unix-datetime-to-a-sas-datetime/
 
-### show dashboard on the screen, using visual analytics, url display and ESP connect
-### improve visuals 
-###  per 10 sec power data
-###  stop project from web interface
-###  opening model from web interface issue
-###  max power
-###  usage instead of meter readings
-###  Add thermostaat program
-###  Open from outside network
+### show dashboard on the screen, using visual analytics, url display and ESP connect  
+###  improve visuals   
+###  per 10 sec power data  
+###  stop project from web interface  
+###  opening model from web interface issue  
+###  max power  
+###  usage instead of meter readings  
+###  Add thermostaat program  
+
+###  symbolic link from sas web server to ESP connect
+1. Symbolic link
+```
+cd C:\SAS\Config\Lev1\Web\WebServer\htdocs
+mklink /D esp-connect C:\files\SourceTree\esp-connect
+ICACLS esp-connect /grant everyone:(OI)(CI)f /T
+```
+2. Edit config C:\SAS\Config\Lev1\Web\WebServer\conf\sas.conf
+   disable conten-security-policy
+#Header set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src * data: blob:;  frame-src * blob: data: mailto:; child-src * blob: data: mailto:; font-src * data:;"
+3. Use new links in VA: http://snlsea.emea.sas.com/esp-connect/examples/lijster/currentpower.html
+
+###  Open from outside network  
   - Portforwarding in router Go to  192.168.1.1 > Netwerkinstelling > NAT 
   
 ```
@@ -1026,9 +1036,11 @@ sftp -P 31422 -i "C:\files\.ssh\baspi82.ppk" sas@baspi.localdomain
 	
 
 ###  auto recover from power failure
+1. startup model
 https://documentation.sas.com/doc/en/espcdc/v_030/espxmllayer/p1r993p8bj4upxn1otx3e9ay5fcr.htm
 esp-properties.yml check indentation and path
   model: "file:///data/lijster.xml"   # Specify a file that contains XML code for a model to run when the ESP server starts
+
 
 
 2. https://smallbusiness.chron.com/run-command-startup-linux-27796.html
@@ -1041,6 +1053,10 @@ script:
 /home/sas/docker/startup
 #!/bin/sh
 set -e
+
+###  Weekly restart to prevent memory issues
+sudo crontab -e
+0 0 * * 7 /sbin/shutdown -r +5
 
 ## at startup  
 sudo systemctl stop serial-getty@ttyS0  
@@ -1072,6 +1088,8 @@ check negative temps!
 
 	
 ## TODO  
+
+
 
 ###  ssl esp server
 

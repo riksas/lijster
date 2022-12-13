@@ -1,9 +1,9 @@
-<project name="lijster" pubsub="auto" threads="1" heartbeat-interval="1">
+<project name="lijster" pubsub="manual" threads="1" heartbeat-interval="1">
   <metadata>
     <meta id="studioUploadedBy">anonymousUser</meta>
     <meta id="studioUploaded">1665839243547</meta>
     <meta id="studioModifiedBy">anonymousUser</meta>
-    <meta id="studioModified">1669034525629</meta>
+    <meta id="studioModified">1670507055263</meta>
     <meta id="layout">{"contQuery":{"AggregateElectricity":{"x":-1325,"y":-830},"AggregateGas":{"x":-1065,"y":-830},"AggregateGetMaxPeriod":{"x":-1085,"y":-1135},"AggregateGetMaxPeriodTemp":{"x":-1830,"y":-830},"AggregateTemp":{"x":-2030,"y":-540},"CalculateMeasuresFromOBIS":{"x":-1580,"y":-370},"CheckDuplicatesP1":{"x":-1580,"y":-855},"CreateTransposeGroup":{"x":-1580,"y":-655},"ElGasNewKey":{"x":-820,"y":-855},"Electricity5Min":{"x":-1330,"y":-455},"Gas5Min":{"x":-1060,"y":-455},"InspectP1":{"x":-1795,"y":-1050},"JoinElGas":{"x":-1330,"y":-265},"JoinMaxPeriod":{"x":-1330,"y":-1050},"JoinTelegram":{"x":-1580,"y":-1150},"JoinTempELGas":{"x":-820,"y":-670},"JoinTempMaxPeriod":{"x":-2020,"y":-745},"KeepUpdatesAll":{"x":-825,"y":-470},"LastPeriodEL":{"x":-1320,"y":-645},"LastPeriodGas":{"x":-1065,"y":-630},"LastPeriodTemp":{"x":-2030,"y":-335},"NewKeyTemp":{"x":-2025,"y":-930},"NewKeysP1":{"x":-1330,"y":-1230},"OneRecordperTranspose":{"x":-1580,"y":-470},"OutputAll5Min":{"x":-830,"y":-380},"OutputElGas":{"x":-820,"y":-765},"OutputElec":{"x":-1330,"y":-360},"OutputGas":{"x":-1055,"y":-370},"OutputTemp":{"x":-2035,"y":-55},"P1Telegram":{"x":-1800,"y":-1325},"ParseMessage":{"x":-2020,"y":-1225},"ParseTelegram":{"x":-1580,"y":-1240},"PrevPeriodP1":{"x":-1590,"y":-265},"PrevPeriodTemp":{"x":-2020,"y":-1130},"ReadP1":{"x":-1575,"y":-1330},"ReadTemp":{"x":-2020,"y":-1325},"RemoveStateAll":{"x":-820,"y":-570},"RemoveStateELGas":{"x":-820,"y":-955},"RemoveStateElec":{"x":-1320,"y":-730},"RemoveStateElec2":{"x":-1330,"y":-550},"RemoveStateGas":{"x":-1065,"y":-730},"RemoveStateGas2":{"x":-1065,"y":-545},"RemoveStateP1":{"x":-1580,"y":-755},"RemoveStateP1Lags":{"x":-1590,"y":-165},"RemoveStateTemp":{"x":-2030,"y":-435},"RemoveStateTemp1":{"x":-2025,"y":-1030},"RemoveStateTemp2":{"x":-2030,"y":-230},"Retain10MinP1Lags":{"x":-1330,"y":-940},"Retain10MinTemp":{"x":-2020,"y":-645},"RetainSixtySecondsP1":{"x":-1580,"y":-950},"SelectedMeasuresP1":{"x":-1580,"y":-1055},"Time5Min":{"x":-2035,"y":-140},"TransposeP1":{"x":-1580,"y":-560}}}</meta>
   </metadata>
   <contqueries>
@@ -595,7 +595,7 @@ sum(
           <expression><![CDATA[isnull(gas)==0]]></expression>
         </window-filter>
         <window-remove-state remove="deletes retentionUpdates retentionDeletes updateBlockDeletes" name="RemoveStateAll"/>
-        <window-functional index="pi_EMPTY" name="OutputAll5Min">
+        <window-functional index="pi_EMPTY" pubsub="true" name="OutputAll5Min">
           <schema>
             <fields>
               <field name="sensor_id" type="int64" key="true"/>
