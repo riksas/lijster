@@ -1,8 +1,10 @@
 
-![SAS VA Report](/sas VA/Screenshot.PNG "SAS VA Report")
 
-<img src="/sas VA/Screenshot.PNG" alt="SAS VA Report" style="height: 100px; width:100px;"/>
+<img src="/sas VA/Screenshot.PNG" alt="SAS VA Report" style="height: 600px; width:950px;"/>
 
+
+
+https://github.com/BasAltorf/lijster/blob/master/sas%20VA/Screenshot.PNG
 
 # 1. Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device
 
