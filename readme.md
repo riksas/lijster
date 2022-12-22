@@ -2,12 +2,6 @@
 
 <img src="/sas VA/Screenshot.PNG" alt="SAS VA Report" style="height: 600px; width:950px;"/>
 
-
-
-https://github.com/BasAltorf/lijster/blob/master/sas%20VA/Screenshot.PNG
-
-#  Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device
-
 - [Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device](#lijster-project---read-gas-and-electricity-usage-using-sas-esp-on-an-edge-device)
   - [1.1. Install Ubuntu on BasPi](#11-install-ubuntu-on-baspi)
     - [1.1.1. Use correct images: arm or x64 linux? https://en.wikipedia.org/wiki/AArch64](#111-use-correct-images-arm-or-x64-linux-httpsenwikipediaorgwikiaarch64)
@@ -35,27 +29,31 @@ https://github.com/BasAltorf/lijster/blob/master/sas%20VA/Screenshot.PNG
 - [3. FTP](#3-ftp)
     - [3.0.1. use ftp server https://ubuntu.com/server/docs/service-ftp  in first version](#301-use-ftp-server-httpsubuntucomserverdocsservice-ftp--in-first-version)
 - [4. Issues](#4-issues)
-    - [4.0.1. Issue with ttyS0 --\> need to run after restart of BASPi](#401-issue-with-ttys0----need-to-run-after-restart-of-baspi)
-    - [4.0.2.  regex Temp](#402--regex-temp)
-    - [4.0.3. fix issue with with TLS mixed content:](#403-fix-issue-with-with-tls-mixed-content)
-    - [4.0.4. change time on Pi](#404-change-time-on-pi)
-    - [4.0.5. issue with sudoers file:](#405-issue-with-sudoers-file)
-    - [4.0.6. summer time correction (fixed)](#406-summer-time-correction-fixed)
-    - [4.0.7. stop project from web interface (skip)](#407-stop-project-from-web-interface-skip)
-    - [4.0.8. opening model from web interface (skip)](#408-opening-model-from-web-interface-skip)
-    - [4.0.9. max power  (added)](#409-max-power--added)
-    - [4.0.10. usage instead of meter readings  (done)](#4010-usage-instead-of-meter-readings--done)
-    - [4.0.11. Add thermostaat program  (done in VA Autoload)](#4011-add-thermostaat-program--done-in-va-autoload)
-    - [4.0.12. symbolic link from sas web server to ESP connect](#4012-symbolic-link-from-sas-web-server-to-esp-connect)
-      - [4.0.12.1. Symbolic link](#40121-symbolic-link)
-      - [4.0.12.2. Edit config C:\\SAS\\Config\\Lev1\\Web\\WebServer\\conf\\sas.conf](#40122-edit-config-csasconfiglev1webwebserverconfsasconf)
-      - [4.0.12.3. Use new links in VA: http://snlsea.emea.sas.com/esp-connect/examples/lijster/currentpower.html](#40123-use-new-links-in-va-httpsnlseaemeasascomesp-connectexampleslijstercurrentpowerhtml)
-    - [4.0.13. Open from outside the network](#4013-open-from-outside-the-network)
-    - [4.0.14. Archiving of data](#4014-archiving-of-data)
-    - [4.0.15. secure ftp](#4015-secure-ftp)
+    - [4.1. Issue with ttyS0 --\> need to run after restart of BASPi](#41-issue-with-ttys0----need-to-run-after-restart-of-baspi)
+    - [4.2.  regex Temp](#42--regex-temp)
+    - [4.3. fix issue with with TLS mixed content:](#43-fix-issue-with-with-tls-mixed-content)
+    - [4.4. change time on Pi](#44-change-time-on-pi)
+    - [4.5. issue with sudoers file:](#45-issue-with-sudoers-file)
+    - [4.6. summer time correction (fixed)](#46-summer-time-correction-fixed)
+    - [4.7. stop project from web interface (skip)](#47-stop-project-from-web-interface-skip)
+    - [4.8. opening model from web interface (skip)](#48-opening-model-from-web-interface-skip)
+    - [4.9. max power  (added)](#49-max-power--added)
+    - [4.10. usage instead of meter readings  (done)](#410-usage-instead-of-meter-readings--done)
+    - [4.11. Add thermostaat program  (done in VA Autoload)](#411-add-thermostaat-program--done-in-va-autoload)
+    - [4.12. symbolic link from sas web server to ESP connect](#412-symbolic-link-from-sas-web-server-to-esp-connect)
+      - [4.12.1. Symbolic link](#4121-symbolic-link)
+      - [4.12.2. Edit config C:\\SAS\\Config\\Lev1\\Web\\WebServer\\conf\\sas.conf](#4122-edit-config-csasconfiglev1webwebserverconfsasconf)
+      - [4.12.3. Use new links in VA: http://snlsea.emea.sas.com/esp-connect/examples/lijster/currentpower.html](#4123-use-new-links-in-va-httpsnlseaemeasascomesp-connectexampleslijstercurrentpowerhtml)
+    - [4.13. Open from outside the network](#413-open-from-outside-the-network)
+    - [4.14. Archiving of data](#414-archiving-of-data)
+    - [4.15. secure ftp](#415-secure-ftp)
 - [5. At startup of raspberry PI (this is now automated)](#5-at-startup-of-raspberry-pi-this-is-now-automated)
-    - [5.0.1. list settings](#501-list-settings)
+    - [5.1. list settings](#51-list-settings)
 
+
+https://github.com/BasAltorf/lijster/blob/master/sas%20VA/Screenshot.PNG
+
+#  Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device
 
 ## 1.1. Install Ubuntu on BasPi 
 ### 1.1.1. Use correct images: arm or x64 linux? https://en.wikipedia.org/wiki/AArch64
@@ -695,7 +693,7 @@ I altered the use of the parameter TYPE, 2 places, to accept DATA and VIEW.
 
 # 4. Issues
 
-### 4.0.1. Issue with ttyS0 --> need to run after restart of BASPi
+### 4.1. Issue with ttyS0 --> need to run after restart of BASPi
 https://forum.arduino.cc/t/dev-ttyacm0-not-in-group-dialout/525321/3  
 ```
 sudo systemctl stop serial-getty@ttyS0  
@@ -704,7 +702,7 @@ sudo chmod a+rw /dev/ttyS0
 ls -ltu /dev/ttyS0
 ```
 
-### 4.0.2.  regex Temp 
+### 4.2.  regex Temp 
 
 ```
 number(rgx('[^-]([0-9]*\.[0-9]*)C',$sensor_bericht,1))
@@ -719,13 +717,13 @@ number(rgx('[^-]([0-9]*\.[0-9]*)C',$sensor_bericht,1))
 ``` 
  
 
-### 4.0.3. fix issue with with TLS mixed content:
+### 4.3. fix issue with with TLS mixed content:
 
 https://sirius.na.sas.com/Sirius/GSTS/ShowTrack.aspx?trknum=7613339506
 https://go.documentation.sas.com/doc/nl/espcdc/v_021/dplyedge0phy0lax/p0oglqxbdzclxrn1cnq6k185zf8x.htm
 Solved by using docker container for ESP Studio from Jan.
 
-### 4.0.4. change time on Pi   
+### 4.4. change time on Pi   
 timedatectl set-timezone Europe/Amsterdam 
  
  https://unix.stackexchange.com/questions/421354/convert-epoch-time-to-human-readable-in-libreoffice-calc
@@ -761,7 +759,7 @@ And presented as:
 01/30/2018 10:00:00
 if the format of H3 is set to such time format.
 
-### 4.0.5. issue with sudoers file:  
+### 4.5. issue with sudoers file:  
 
 In the first terminal run the following command to get its PID.
 echo $$
@@ -771,29 +769,29 @@ In the first terminal, do whatever you need to do with pkexec.
 
 
 
-### 4.0.6. summer time correction (fixed)
+### 4.6. summer time correction (fixed)
 https://blogs.sas.com/content/sasdummy/2015/04/16/how-to-convert-a-unix-datetime-to-a-sas-datetime/
 
  
-###  4.0.7. stop project from web interface (skip)
-###  4.0.8. opening model from web interface (skip)   
-###  4.0.9. max power  (added)
-###  4.0.10. usage instead of meter readings  (done)
-###  4.0.11. Add thermostaat program  (done in VA Autoload)
-###  4.0.12. symbolic link from sas web server to ESP connect  
+###  4.7. stop project from web interface (skip)
+###  4.8. opening model from web interface (skip)   
+###  4.9. max power  (added)
+###  4.10. usage instead of meter readings  (done)
+###  4.11. Add thermostaat program  (done in VA Autoload)
+###  4.12. symbolic link from sas web server to ESP connect  
 
-#### 4.0.12.1. Symbolic link
+#### 4.12.1. Symbolic link
 ```
 cd C:\SAS\Config\Lev1\Web\WebServer\htdocs
 mklink /D esp-connect C:\files\SourceTree\esp-connect
 ICACLS esp-connect /grant everyone:(OI)(CI)f /T
 ```
-#### 4.0.12.2. Edit config C:\SAS\Config\Lev1\Web\WebServer\conf\sas.conf
+#### 4.12.2. Edit config C:\SAS\Config\Lev1\Web\WebServer\conf\sas.conf
    disable conten-security-policy
 #Header set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src * data: blob:;  frame-src * blob: data: mailto:; child-src * blob: data: mailto:; font-src * data:;"
-#### 4.0.12.3. Use new links in VA: http://snlsea.emea.sas.com/esp-connect/examples/lijster/currentpower.html
+#### 4.12.3. Use new links in VA: http://snlsea.emea.sas.com/esp-connect/examples/lijster/currentpower.html
 
-### 4.0.13. Open from outside the network  
+### 4.13. Open from outside the network  
 
   * Portforwarding in router (for T-Mobile Zyxel router Go to  192.168.1.1 - Netwerkinstelling - NAT )
     	
@@ -803,9 +801,10 @@ ICACLS esp-connect /grant everyone:(OI)(CI)f /T
 | 2 |        | ESPConnect    |                    | ETH_Internet  | 192.168.1.159   | 33000      | 33000     | 33000                | 33000               | ALL      |          |  |
 | 3 |        | EgdeFTP       |                    | ETH_Internet  | 192.168.1.90    | 31422      | 31422     | 31422                | 31422               | TCP      |
 
-	- Add IP address from outside world to windows host file: 85.144.57.74		baspi.localdomain	  #baspi port fwd
 
-	- Open windows firewall: 
+- Add IP address from outside world to windows host file: 85.144.57.74		baspi.localdomain	  #baspi port fwd
+
+- Open windows firewall: 
 
 | Name                     | Group | Profile | Enabled | Action | Override | Program | Local Address | Remote Address | Protocol | Local Port   | Remote Port | Authorized Users | Authorized Computers | Authorized Local Principals | Local User Owner | Application Package |
 |--------------------------|-------|---------|---------|--------|----------|---------|---------------|----------------|----------|--------------|-------------|------------------|----------------------|-----------------------------|------------------|---------------------|
@@ -829,7 +828,7 @@ module.exports = {
 	Add BASPi ftp port to portforwarding
 	
 
-### 4.0.14. Archiving of data
+### 4.14. Archiving of data
 
   - Change code with view to a new data load program which accepts wild cards "C:\SAS\Config\Lev1\SASApp\SASEnvironment\SASCode\Jobs\load_p1_t_to_autoload.sas" 
   call this code from 
@@ -841,7 +840,7 @@ echo "sensor_id,period,temperatuur,power,power_max,electricity_low,electricity_l
 put code in shell script
 put script in /etc/cron.monthly/
 
-###  4.0.15. secure ftp 
+###  4.15. secure ftp 
 sshd_config  
 PubkeyAuthentication yes  
 
@@ -1053,7 +1052,7 @@ sudo chmod a+rw /dev/ttyS0
 sudo stty -F /dev/ttyS0 9600 cs8 -cstopb -parenb 
 stty -F /dev/ttyUSB0 raw 115200 evenp
 
-### 5.0.1. list settings
+### 5.1. list settings
 stty -F /dev/ttyUSB0 --all
 
 cd docker
