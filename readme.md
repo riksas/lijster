@@ -6,9 +6,9 @@
 
 https://github.com/BasAltorf/lijster/blob/master/sas%20VA/Screenshot.PNG
 
-# 1. Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device
+#  Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device
 
-- [1. Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device](#1-lijster-project---read-gas-and-electricity-usage-using-sas-esp-on-an-edge-device)
+- [Lijster Project - Read Gas and Electricity Usage using SAS ESP on an edge device](#lijster-project---read-gas-and-electricity-usage-using-sas-esp-on-an-edge-device)
   - [1.1. Install Ubuntu on BasPi](#11-install-ubuntu-on-baspi)
     - [1.1.1. Use correct images: arm or x64 linux? https://en.wikipedia.org/wiki/AArch64](#111-use-correct-images-arm-or-x64-linux-httpsenwikipediaorgwikiaarch64)
     - [1.1.2. version of linux?](#112-version-of-linux)
@@ -55,7 +55,8 @@ https://github.com/BasAltorf/lijster/blob/master/sas%20VA/Screenshot.PNG
     - [4.0.15. secure ftp](#4015-secure-ftp)
 - [5. At startup of raspberry PI (this is now automated)](#5-at-startup-of-raspberry-pi-this-is-now-automated)
     - [5.0.1. list settings](#501-list-settings)
-  
+
+
 ## 1.1. Install Ubuntu on BasPi 
 ### 1.1.1. Use correct images: arm or x64 linux? https://en.wikipedia.org/wiki/AArch64
 ```
@@ -456,46 +457,45 @@ cat /dev/ttyUSB0
 
 ### 1.7.2. P1 Telegram
 
-```
-/ISK5\2M550T-1012			              											Header information
+| Value                                                                                                                 | OBIS reference  |
+|-----------------------------------------------------------------------------------------------------------------------|-----------------|
+| Version information for P1 output DSMR                                                                                | 1-3:0.2.8       |
+| Date-time stamp of the P1 message                                                                                     | 0-0:1.0.0       |
+| Equipment identifier                                                                                                  | 0-0:96.1.1.255  |
+| Meter Reading electricity delivered to client (low tariff) in 0,001 kWh                                               | 1-0:1.8.1.255   |
+| Meter Reading electricity delivered to client (normal tariff) in 0,001 kWh                                            | 1-0:1.8.2.255   |
+| Meter Reading electricity delivered by client (low tariff) in 0,001 kWh                                               | 1-0:2.8.1.255   |
+| Meter Reading electricity delivered by client (normal tariff) in 0,001 kWh                                            | 1-0:2.8.2.255   |
+| Tariff indicator electricity. The tariff indicator can be used to switch tariff                                       | 0-0:96.14.0.255 |
+| dependent loads e.g boilers. This is responsibility of the P1 user                                                    | 1-0:1.7.0.255   |
+| Actual electricity power delivered (+P) in 1 Watt resolution                                                          | 1-0:2.7.0.255   |
+| Actual electricity power received (-P) in 1 Watt resolution                                                           | 0-0:96.7.21.255 |
+| Number of power failures in any phases                                                                                | 0-0:96.7. 9.255 |
+| Number of long power failures in any phases                                                                           | 1-0:99:97.0.255 |
+| Power failure event log                                                                                               | 1-0:32.32.0.255 |
+| Number of voltage sags in phase L1                                                                                    | 1-0:52.32.0.255 |
+| Number of voltage sags in phase L2                                                                                    | 1-0:72.32.0.255 |
+| Number of voltage sags in phase L3                                                                                    | 1-0:32.36.0.255 |
+| Number of voltage swells in phase L1                                                                                  | 1-0:52.36.0.255 |
+| Number of voltage swells in phase L2                                                                                  | 1-0:72.36.0.255 |
+| Number of voltage swells in phase L3                                                                                  | 1-0:32.7.0.255  |
+| Instantaneous voltage L1                                                                                              | 1-0:52.7.0.255  |
+| Instantaneous voltage L2                                                                                              | 1-0:72.7.0.255  |
+| Instantaneous voltage L3                                                                                              | 1-0:31.7.0.255  |
+| Instantaneous current L1                                                                                              | 1-0:51.7.0.255  |
+| Instantaneous current L2                                                                                              | 1-0:71.7.0.255  |
+| Instantaneous current L3                                                                                              | 1-0:21.7.0.255  |
+| Instantaneous active power L1 (+P)                                                                                    | 1-0:41.7.0.255  |
+| Instantaneous active power L2 (+P)                                                                                    | 1-0:61.7.0.255  |
+| Instantaneous active power L3 (+P)                                                                                    | 1-0:22.7.0.255  |
+| Instantaneous active power L1 (-P)                                                                                    | 1-0:42.7.0.255  |
+| Instantaneous active power L2 (-P)                                                                                    | 1-0:62.7.0.255  |
+| Instantaneous active power L3 (-P)                                                                                    | 1-0:62.7.0.255  |
+| Text message max 1024 characters.                                                                                     | 0-0:96.13.0.255 |
+| Device-Type                                                                                                           | 0-1:24.1.0.255  |
+| Equipment identifier                                                                                                  | 0-1:96.1.0.255  |
+| Last 5-minute value (temperature converted), gas delivered to client in m3, including decimal values and capture time | 0-1:24.2.1.255  |
 
-1-3:0.2.8(50)																					Version informationfor P1 output DSMR version 5.0
-0-0:1.0.0(220711112847S)											Date-time stamp of the P1 message
-0-0:96.1.1(4530303434303037343534313636333139)  						Equipment identifier
-1-0:1.8.1(002872.376*kWh)                                           Meter Reading electricity delivered to client (Tariff 1 low) in 0,001 kWh
-1-0:1.8.2(003551.917*kWh)                                           Meter Reading electricity delivered to client (Tariff 2 high) in 0,001 kWh     
-1-0:2.8.1(000000.000*kWh)											Meter Reading electricity delivered by client (Tariff 1 low) in 0,001 kWh
-1-0:2.8.2(000000.006*kWh)                                           Meter Reading electricity delivered by client (Tariff 2 high) in 0,001 kWh
-0-0:96.14.0(0002)                                                   Tariff indicator electricity. The tariff indicator can also be used to switch tariff dependent loads e.g boilers. This is the responsibility of the P1 user
-1-0:1.7.0(00.140*kW)                                                Actual electricity power delivered (+P) in 1 Watt resolution
-1-0:2.7.0(00.000*kW)                                                Actual electricity power received (+P) in 1 Watt resolution 
-0-0:96.7.21(00004)                                                  Number of power failures in any phase
-0-0:96.7.9(00005)                                                   Number of long power failures in any phase
-1-0:99.97.0(3)(0-0:96.7.19)(190712035024S)(0000000224*s)(200808161515S)(0000002076*s)(211208144738W)(0000003251*s) Power Failure Event Log (long power failures)
-1-0:32.32.0(00000)		                                            Number of voltage sags in phase L1										
-1-0:52.32.0(00000)                                                  Number of voltage sags in phase L2
-1-0:72.32.0(00000)                                                  Number of voltage sags in phase L3
-1-0:32.36.0(00001)													Number of voltage swells in phase L1
-1-0:52.36.0(00001)													Number of voltage swells in phase L2
-1-0:72.36.0(00001)													Number of voltage swells in phase L3
-0-0:96.13.0()														Text message max1024 characters.
-1-0:32.7.0(236.3*V)													Instantaneous voltage L1 (+P) in V resolution
-1-0:52.7.0(235.0*V)                                                 Instantaneous voltage L2 (+P) in V resolution
-1-0:72.7.0(237.4*V)                                                 Instantaneous voltage L3 (+P) in V resolution
-1-0:31.7.0(000*A)													Instantaneous current L1 (+P) in A resolution
-1-0:51.7.0(000*A)                                                   Instantaneous current L2 (+P) in A resolution
-1-0:71.7.0(000*A)                                                   Instantaneous current L3 (+P) in A resolution
-1-0:21.7.0(00.000*kW)												Instantaneous active power L1 (+P) in W resolution
-1-0:41.7.0(00.054*kW)												Instantaneous active power L2 (+P) in W resolution
-1-0:61.7.0(00.084*kW)												Instantaneous active power L3 (+P) in W resolution
-1-0:22.7.0(00.000*kW)												Instantaneous active power L3 (-P) in W resolution
-1-0:42.7.0(00.000*kW)                                               Instantaneous active power L2 (-P) in W resolution
-1-0:62.7.0(00.000*kW)                                               Instantaneous active power L3 (-P) in W resolution
-0-1:24.1.0(003)                                                  	Device-Type
-0-1:96.1.0(4730303339303031393435353539363139)                   	Equipment identifier (Gas)
-0-1:24.2.1(220711112500S)(03432.504*m3)                          	Last 5-minute value (temperature converted), gas delivered to client in m3, including decimal values and capture time
-!7255
-```
 
 ---
 
@@ -795,25 +795,22 @@ ICACLS esp-connect /grant everyone:(OI)(CI)f /T
 
 ### 4.0.13. Open from outside the network  
 
-  * Portforwarding in router Go to  192.168.1.1 - Netwerkinstelling - NAT 
-  
-```
-
-#	Status	Servicenaam	Oorspronkelijke IP	WAN-interface	Server IP-adres	Startpoort	Eindpoort Vertaling startpoort	Vertaling eindpoort	Protocol	Wijzigen <!-- omit from toc -->  	   
-1		EdgeESPSerfer		ETH_Internet	192.168.1.90	31415	31416	31415	31416	TCP	     
-2		ESPConnect			ETH_Internet	192.168.1.159	33000	33000	33000	33000	ALL	    
-3		EgdeFTP				VD_Internet		192.168.1.90	21		22		21		22		ALL	
-```
+  * Portforwarding in router (for T-Mobile Zyxel router Go to  192.168.1.1 - Netwerkinstelling - NAT )
+    	
+| # | Status | Servicenaam   | Oorspronkelijke IP | WAN-interface | Server IP-adres | Startpoort | Eindpoort | Vertaling startpoort | Vertaling eindpoort | Protocol | Wijzigen |  |
+|---|--------|---------------|--------------------|---------------|-----------------|------------|-----------|----------------------|---------------------|----------|----------|--|
+| 1 |        | EdgeESPSerfer |                    | ETH_Internet  | 192.168.1.90    | 31415      | 31416     | 31415                | 31416               | TCP      |          |  |
+| 2 |        | ESPConnect    |                    | ETH_Internet  | 192.168.1.159   | 33000      | 33000     | 33000                | 33000               | ALL      |          |  |
+| 3 |        | EgdeFTP       |                    | ETH_Internet  | 192.168.1.90    | 31422      | 31422     | 31422                | 31422               | TCP      |
 
 	- Add IP address from outside world to windows host file: 85.144.57.74		baspi.localdomain	  #baspi port fwd
 
 	- Open windows firewall: 
 
-```
-Name	Group	Profile	Enabled	Action	Override	Program	Local Address	Remote Address	Protocol	Local Port	Remote Port	Authorized Users	Authorized Computers	Authorized Local Principals	Local User Owner	Application Package	
-Allow ESP Server on Edge		All	Yes	Allow	No	Any	Any	Any	TCP	31415, 31416	Any	Any	Any	Any	Any	Any	
-Allow ESP Connect		All	Yes	Allow	No	Any	Any	Any	TCP	33000	Any	Any	Any	Any	Any	Any	
-```
+| Name                     | Group | Profile | Enabled | Action | Override | Program | Local Address | Remote Address | Protocol | Local Port   | Remote Port | Authorized Users | Authorized Computers | Authorized Local Principals | Local User Owner | Application Package |
+|--------------------------|-------|---------|---------|--------|----------|---------|---------------|----------------|----------|--------------|-------------|------------------|----------------------|-----------------------------|------------------|---------------------|
+| Allow ESP Server on Edge |       | All     | Yes     | Allow  | No       | Any     | Any           | Any            | TCP      | 31415, 31416 | Any         | Any              | Any                  | Any                         | Any              | Any                 |
+| Allow ESP Connect        |       | All     | Yes     | Allow  | No       | Any     | Any           | Any            | TCP      | 33000        | Any         | Any              | Any                  | Any                         | Any              | Any                 |
 
 - Use following fiveserver.config.js :
 ```
